@@ -35,6 +35,7 @@ const final_create_btn_text = "Create";
 const edit_btn_text = "Edit";
 const update_btn_text = "Update";
 const delete_btn_text = "Delete";
+const error_message = "This field is required";
 
 context("Project tests", () => {
   before(() => {
@@ -57,36 +58,49 @@ context("Project tests", () => {
     cy.saveLocalStorage();
   });
   it("Creating a new project", () => {
-    // add negative assertions
     cy.wait(1000);
     cy.intercept("/api/projects").as("newproject");
     cy.contains(create_btn).should("be.visible").click();
-
+    cy.get(final_create_btn)
+      .should("be.visible")
+      .should("contain", final_create_btn_text)
+      .click();
+    Array.from({ length: 2 }, (x, i) => {
+      i = i + 1;
+      cy.get(`:nth-child(${i}) > .input-field > .invalid-feedback`)
+        .should("be.visible")
+        .should("contain", error_message);
+    });
     cy.get(name)
       .should("be.visible")
       .type(random_project_name, { force: true });
     cy.get(description)
       .should("be.visible")
       .type(random_project_dercription, { force: true });
-    cy.get(final_create_btn)
-      .should("be.visible")
-      .should("contain", final_create_btn_text)
-      .click();
+    cy.get(final_create_btn).click();
     cy.wait("@newproject");
     cy.contains(random_project_name).should("be.visible");
     cy.contains(random_project_dercription).should("be.visible");
   });
   it("Editing a project", () => {
-    // add negative assertions
     cy.intercept("/api/projects/*").as("project");
     cy.contains(edit_btn_text).click();
     cy.wait("@project");
-    cy.get(name).clear().type(random_edit_project_name);
-    cy.get(description).clear().type(random_edit_project_dercription);
+    cy.get(name).should("be.visible").clear();
+    cy.get(description).should("be.visible").clear();
     cy.get(update_btn)
       .should("be.visible")
       .should("contain", update_btn_text)
       .click();
+    Array.from({ length: 2 }, (x, i) => {
+      i = i + 1;
+      cy.get(`:nth-child(${i}) > .input-field > .invalid-feedback`)
+        .should("be.visible")
+        .should("contain", error_message);
+    });
+    cy.get(name).type(random_edit_project_name);
+    cy.get(description).type(random_edit_project_dercription);
+    cy.get(update_btn).click();
     cy.contains(random_edit_project_name).should("be.visible");
     cy.contains(random_edit_project_dercription).should("be.visible");
   });
@@ -97,7 +111,10 @@ context("Project tests", () => {
       .then((value) => {
         let first_project_name = value;
 
-        cy.get(first_project + project_delete_btn).click();
+        cy.get(first_project + project_delete_btn)
+          .should("be.visible")
+          .should("contain", delete_btn_text)
+          .click();
         cy.contains(first_project_name).should("not.exist");
       });
   });

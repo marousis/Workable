@@ -41,6 +41,7 @@ let random_task_edit_summary = Math.random()
 let random_task_edit_dercription = Math.random()
   .toString(36)
   .replace(/[^a-z]+/g, "");
+const error_message = "This field is required";
 
 context("Task tests", () => {
   before(() => {
@@ -63,12 +64,18 @@ context("Task tests", () => {
     cy.saveLocalStorage();
   });
   it("Creating a new task", () => {
-    // add negative assertions
     cy.get(add_task_btn)
       .should("be.visible")
       .should("contain", add_task_btn_text)
       .click();
     cy.url().should("contain", new_task_path);
+    cy.get(create_btn).click();
+    Array.from({ length: 2 }, (x, i) => {
+      i = i + 1;
+      cy.get(`:nth-child(${i}) > .input-field > .invalid-feedback`)
+        .should("be.visible")
+        .should("contain", error_message);
+    });
     cy.get(summary).type(random_task_summary, { force: true });
     cy.get(description).type(random_task_dercription, { force: true });
     cy.get(labels_selector).type(label, { force: true });
@@ -78,13 +85,22 @@ context("Task tests", () => {
     cy.url().should("contain", tasks_path);
   });
   it("Editing a task", () => {
-    // add negative assertions
     cy.get(edit_task_btn)
       .should("be.visible")
       .should("contain", edit_task_btn_text)
       .click();
     cy.url().should("contain", edit_task_path);
-    cy.get(summary).clear().type(random_task_edit_summary, { force: true });
+    cy.wait(1000);
+    cy.get(summary).should("be.visible").clear();
+    cy.get(description).should("be.visible").clear();
+    cy.get(create_btn).should("be.visible").click();
+    Array.from({ length: 2 }, (x, i) => {
+      i = i + 1;
+      cy.get(`:nth-child(${i}) > .input-field > .invalid-feedback`)
+        .should("be.visible")
+        .should("contain", error_message);
+    });
+    cy.get(summary).type(random_task_edit_summary, { force: true });
     cy.get(description).type(random_task_edit_dercription, { force: true });
     cy.get(create_btn).click();
     cy.url().should("contain", tasks_path);

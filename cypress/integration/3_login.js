@@ -41,6 +41,7 @@ const create_href = "/createProject";
 let random_address = (Math.random() + 1).toString(36);
 const update_info_btn_text = "Update info";
 const update_success = "User info updated successfully!";
+const error_message_edit = "This field is required";
 
 //Loop lists
 var loggedin_fields = [
@@ -157,5 +158,18 @@ context("Signing up Test", () => {
       .then((value) => {
         expect(value).to.equal(random_address);
       });
+  });
+  it("Validate UNsuccessful changes", () => {
+    // add negative assertions
+    cy.intercept("/api/currentUser").as("user");
+    cy.get(fullName).should("be.visible").clear();
+    cy.get(email).should("be.visible").clear();
+    cy.get(update_info_btn).should("be.visible").click();
+    Array.from({ length: 2 }, (x, i) => {
+      i = i + 1;
+      cy.get(`:nth-child(${i}) > .input-field > .invalid-feedback`)
+        .should("be.visible")
+        .should("contain", error_message_edit);
+    });
   });
 });
