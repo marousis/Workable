@@ -1,6 +1,7 @@
 {
   "scripts": {
-    "workable": "cypress open"
+    "workable": "cypress open",
+    "workable_cli": "cypress run"
   },
   "devDependencies": {
     "@4tw/cypress-drag-drop": "^2.1.0",
