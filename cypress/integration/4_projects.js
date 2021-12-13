@@ -19,10 +19,18 @@ const project_delete_btn = ".card-action > #delete_project";
 const email_valid = "marousis@gmail.com";
 const password_valid = "27021989";
 const create_btn = "Create";
-let random_project_name = (Math.random() + 1).toString(36);
-let random_project_dercription = (Math.random() + 1).toString(36);
-let random_edit_project_name = (Math.random() + 1).toString(36);
-let random_edit_project_dercription = (Math.random() + 1).toString(36);
+let random_project_name = Math.random()
+  .toString(36)
+  .replace(/[^a-z]+/g, "");
+let random_project_dercription = Math.random()
+  .toString(36)
+  .replace(/[^a-z]+/g, "");
+let random_edit_project_name = Math.random()
+  .toString(36)
+  .replace(/[^a-z]+/g, "");
+let random_edit_project_dercription = Math.random()
+  .toString(36)
+  .replace(/[^a-z]+/g, "");
 const final_create_btn_text = "Create";
 const edit_btn_text = "Edit";
 const update_btn_text = "Update";

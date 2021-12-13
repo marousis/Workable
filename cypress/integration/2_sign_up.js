@@ -14,7 +14,9 @@ const success_card_paragraph = ".card-content>p";
 // Data
 const error_message = "This field is required";
 const inputs_index = [name, email, password, company, address];
-let random_username = (Math.random() + 1).toString(36).substring(7);
+let random_username = Math.random()
+  .toString(36)
+  .replace(/[^a-z]+/g, "");
 let username_to_submit = random_username;
 let random_mail = random_username + "@gmail.com";
 let invalid_mail = random_username + "#gmail.com";

@@ -26,13 +26,21 @@ const first_task_delete_btn = "#to_do_items > :nth-child(1) #btn_delete_task";
 const email_valid = "marousis@gmail.com";
 const password_valid = "27021989";
 const add_task_btn_text = "Add Task";
-let random_task_summary = (Math.random() + 1).toString(36);
-let random_task_dercription = (Math.random() + 1).toString(36);
+let random_task_summary = Math.random()
+  .toString(36)
+  .replace(/[^a-z]+/g, "");
+let random_task_dercription = Math.random()
+  .toString(36)
+  .replace(/[^a-z]+/g, "");
 const label = "backend";
 const filepath = "data.pdf";
 const edit_task_btn_text = "Edit";
-let random_task_edit_summary = (Math.random() + 1).toString(36);
-let random_task_edit_dercription = (Math.random() + 1).toString(36);
+let random_task_edit_summary = Math.random()
+  .toString(36)
+  .replace(/[^a-z]+/g, "");
+let random_task_edit_dercription = Math.random()
+  .toString(36)
+  .replace(/[^a-z]+/g, "");
 
 context("Task tests", () => {
   before(() => {
