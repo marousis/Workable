@@ -13,13 +13,16 @@ const success_card_paragraph = ".card-content>p";
 
 // Data
 const error_message = "This field is required";
+const error_existing_mail = "Email `test_login@gmail.com` already exits";
+const error_invalid_mail_format = "Invalid email format";
 const inputs_index = [name, email, password, company, address];
 let random_username = Math.random()
   .toString(36)
   .replace(/[^a-z]+/g, "");
 let username_to_submit = random_username;
 let random_mail = random_username + "@gmail.com";
-let invalid_mail = random_username + "#gmail.com";
+const existing_mail = "test_login@gmail.com";
+let invalid_mail_format = random_username + "#gmail.com";
 let email_to_submit = random_mail;
 let random_password = Math.random();
 let password_to_submit = random_password;
@@ -80,19 +83,41 @@ context("Signing up Test", () => {
         .should("contain", error_message);
     });
   });
-  it("Validate Email", () => {
+  it("Validate Existing Email", () => {
     cy.get(email)
       .invoke("attr", "type")
       .then((type) => {
         expect(type).to.equal("text");
       });
-    cy.get(email).type(invalid_mail, { force: true });
     cy.get(submit_btn).click();
     cy.get(":nth-child(2) > .input-field > .invalid-feedback")
       .should("be.visible")
       .should("contain", error_message);
+    cy.get(email).type(existing_mail, { force: true });
+    cy.get(submit_btn).click();
+    cy.get(":nth-child(2) > .input-field > .invalid-feedback")
+      .should("be.visible")
+      .should("contain", error_existing_mail);
+    cy.get(":nth-child(3) > .input-field > .invalid-feedback")
+      .should("be.visible")
+      .should("contain", error_message);
+  });
+  it("Validate Email Format", () => {
+    cy.get(email).clear().type(invalid_mail_format, { force: true });
+    cy.get(submit_btn).click();
+    cy.get(":nth-child(2) > .input-field > .invalid-feedback")
+      .should("be.visible")
+      .should("contain", error_invalid_mail_format);
+    cy.get(":nth-child(3) > .input-field > .invalid-feedback")
+      .should("be.visible")
+      .should("contain", error_message);
+  });
+  it("Validate Email", () => {
     cy.get(email).type(email_to_submit, { force: true });
     cy.get(submit_btn).click();
+    cy.get(":nth-child(2) > .input-field > .invalid-feedback").should(
+      "not.be.visible"
+    );
     cy.get(":nth-child(3) > .input-field > .invalid-feedback")
       .should("be.visible")
       .should("contain", error_message);
